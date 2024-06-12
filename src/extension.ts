@@ -151,7 +151,7 @@ function createTimelineNode(filename: string, storageUri: vscode.Uri, currentSna
 }
 
 function checkIfTimelineArrayReachedMaxAndFixIt(timelineArray: TimelineNode[]) {
-	const timelineArrayMax = 5;
+	const timelineArrayMax = 50;
 	if (timelineArray.length > timelineArrayMax) {
 		let lastTimelineNodeArray: TimelineNode[] = [];
 		lastTimelineNodeArray = timelineArray.splice(0, 1);

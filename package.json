@@ -1,11 +1,12 @@
 {
   "name": "bettertimeline",
   "displayName": "Better Timeline",
-  "description": "StevenDesroches",
+  "publisher": "StevenDesroches",
+  "description": "",
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/StevenDesroches/Better-Timeline"
+    "url": "https://github.com/StevenDesroches/Better-Timeline.git"
   },
   "engines": {
     "vscode": "^1.90.0"

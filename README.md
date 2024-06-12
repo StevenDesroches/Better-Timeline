@@ -17,5 +17,6 @@ If you use this extension, you might want to deactivate the real timeline of vsc
 - [ ] adding settings
     - [ ] max files
     - [ ] max file size
+- [ ] Quick logo
 - [ ] rework the README
 - [ ] add gifs
