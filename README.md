@@ -5,9 +5,9 @@ But I still needed that extension for myself because i was losing some of my wor
 [Proposed timeline](https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.timeline.d.ts)
 [Github issue](https://github.com/microsoft/vscode/issues/84297)
 
-I will keep updating it for my use case
+I will keep updating this extension for my use case
 
-If you use this extension, you might want to deactivate the real timeline of vscode by adding line in your **settings.json**
+If you use this extension, you might want to deactivate the real timeline of vscode by adding this line in your **settings.json**
 ```json
 "workbench.localHistory.enabled": false
 ```
