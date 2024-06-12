@@ -120,7 +120,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.window.onDidChangeActiveTextEditor(function (event) {
 		if (vscode.window.tabGroups.activeTabGroup?.activeTab?.label.includes('↔'))
-			return;//dirty way to check if the tab is an diff view
+			return;//dirty way to check if the tab is a diff view
 
 		currentSnapshot = event?.document.getText() ?? '';
 		if (event?.document.fileName) {
