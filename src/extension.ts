@@ -84,13 +84,49 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 	// START - EVENTS HANDLER
+	let onDidChangeTimeout: ReturnType<typeof setTimeout> | undefined;
 	vscode.workspace.onDidChangeTextDocument(function (event: vscode.TextDocumentChangeEvent) {
 		let document: vscode.TextDocument = event.document;
 		switch (event.reason) {
 			case TextDocumentChangeReason.Redo:
 			case TextDocumentChangeReason.Undo:
+				if (onDidChangeTimeout) {
+					onDidChangeTimeout.refresh();
+				} else {
+					let eventReason = event.reason;
+					onDidChangeTimeout = setTimeout(() => {
+						let timelineNode = createTimelineNode(document.fileName, timelineStorageUri, currentSnapshot, TextDocumentChangeReason[eventReason]);
+						if (timelineNode !== undefined) {
+							currentArray.push(timelineNode);
+							checkIfTimelineArrayReachedMaxAndFixIt(currentArray);
+							let timelinePath = [timelineStorageUri.path, base32.encode(document.fileName), 'timeline.json'].join('\\')
 
-				let timelineNode = createTimelineNode(document.fileName, timelineStorageUri, currentSnapshot, TextDocumentChangeReason[event.reason]);
+							vscode.workspace.fs.writeFile(vscode.Uri.file(timelinePath), new TextEncoder().encode(JSON.stringify(currentArray)));
+
+							if (!timelineDataProvider.hasTimelineArray())
+								timelineDataProvider.setTimelineArray(currentArray);
+							setTimeout(() => {
+								timelineDataProvider.refresh();
+							}, 500);
+						}
+					}, timelineConfigurator.getInsertingDelayEntry());
+				}
+				break;
+		}
+
+		currentSnapshot = document.getText();
+	});
+
+	let onWillSaveTimeout: ReturnType<typeof setTimeout> | undefined;
+	vscode.workspace.onWillSaveTextDocument(function (event) {
+		let document = event.document;
+		if (!document.isDirty)
+			return;
+		if (onWillSaveTimeout) {
+			onWillSaveTimeout.refresh();
+		} else {
+			onWillSaveTimeout = setTimeout(() => {
+				let timelineNode = createTimelineNode(document.fileName, timelineStorageUri, currentSnapshot, 'Save');
 				if (timelineNode !== undefined) {
 					currentArray.push(timelineNode);
 					checkIfTimelineArrayReachedMaxAndFixIt(currentArray);
@@ -104,33 +140,8 @@ export function activate(context: vscode.ExtensionContext) {
 						timelineDataProvider.refresh();
 					}, 500);
 				}
-				break;
+			}, timelineConfigurator.getInsertingDelayEntry());
 		}
-		
-		currentSnapshot = document.getText();
-	});
-
-
-	vscode.workspace.onWillSaveTextDocument(function (event) {
-		let document = event.document;
-		if (!document.isDirty)
-			return;
-
-		let timelineNode = createTimelineNode(document.fileName, timelineStorageUri, currentSnapshot, 'Save');
-		if (timelineNode !== undefined) {
-			currentArray.push(timelineNode);
-			checkIfTimelineArrayReachedMaxAndFixIt(currentArray);
-			let timelinePath = [timelineStorageUri.path, base32.encode(document.fileName), 'timeline.json'].join('\\')
-
-			vscode.workspace.fs.writeFile(vscode.Uri.file(timelinePath), new TextEncoder().encode(JSON.stringify(currentArray)));
-
-			if (!timelineDataProvider.hasTimelineArray())
-				timelineDataProvider.setTimelineArray(currentArray);
-			setTimeout(() => {
-				timelineDataProvider.refresh();
-			}, 500);
-		}
-
 		currentSnapshot = document.getText();
 	})
 
@@ -170,8 +181,7 @@ function createTimelineNode(filename: string, storageUri: vscode.Uri, currentSna
 }
 
 function checkIfTimelineArrayReachedMaxAndFixIt(timelineArray: TimelineNode[]) {
-	const timelineArrayMax = 50;
-	if (timelineArray.length > timelineArrayMax) {
+	if (timelineArray.length > timelineConfigurator.getMaxAllowedEntries()) {
 		let lastTimelineNodeArray: TimelineNode[] = [];
 		lastTimelineNodeArray = timelineArray.splice(0, 1);
 		lastTimelineNodeArray.forEach(function (timelineNode: TimelineNode) {

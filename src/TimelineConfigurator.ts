@@ -17,12 +17,12 @@ export class TimelineConfigurator {
         return parseInt(this.TimelineConfig.get('maxEntrySize') ?? "256");
     }
 
-    getMaxAllowedEntries() {
-        return this.TimelineConfig.get('maxAllowedEntries');
+    getMaxAllowedEntries(): number {
+        return parseInt(this.TimelineConfig.get('maxAllowedEntries') ?? '50');
     }
 
-    getInsertingDelayEntry() {
-        return this.TimelineConfig.get('insertingDelayEntry');
+    getInsertingDelayEntry(): number {
+        return parseInt(this.TimelineConfig.get('insertingDelayEntry') ?? '500');
     }
 
 }
