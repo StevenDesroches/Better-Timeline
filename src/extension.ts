@@ -15,6 +15,13 @@ let timelineStorageUri: vscode.Uri;
 
 
 export function activate(context: vscode.ExtensionContext) {
+	let workbenchLocalHistoryConfig = vscode.workspace.getConfiguration('workbench.localHistory');
+	let isLocalHistoryEnabled = workbenchLocalHistoryConfig.get('enabled');
+	if (isLocalHistoryEnabled) {
+		let localHistoryWarning = `LocalHistory is enabled, you may want to disable it by adding the line **workbench.localHistory.enabled** in your settings.json`;
+		vscode.window.showWarningMessage(localHistoryWarning);
+	}
+
 	timelineStorageUri = context.storageUri ?? context.globalStorageUri;
 	let currentSnapshot: string = '';
 	let currentArray: TimelineNode[] = [];
@@ -37,6 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 			timelineDataProvider.refresh();
 		});
 	}
+
 
 	// START - COMMANDS HANDLER
 	const commandTimelineCompareHandler = (timelineNode: TimelineNode) => {
