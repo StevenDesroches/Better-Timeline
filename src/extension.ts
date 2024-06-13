@@ -3,6 +3,9 @@ import { randomUUID } from 'crypto';
 import { basename, extname } from 'path';
 import { TimelineNode } from './TimelineNode';
 import { TimelinePanel } from './TimelinePanel';
+import { TimelineConfigurator } from './TimelineConfigurator';
+import { utils } from 'mocha';
+import { Utils } from './Utils';
 
 const base32 = require('base32');
 
@@ -12,13 +15,13 @@ enum TextDocumentChangeReason {
 }
 
 let timelineStorageUri: vscode.Uri;
+const timelineConfigurator = new TimelineConfigurator();
 
 
 export function activate(context: vscode.ExtensionContext) {
-	let workbenchLocalHistoryConfig = vscode.workspace.getConfiguration('workbench.localHistory');
-	let isLocalHistoryEnabled = workbenchLocalHistoryConfig.get('enabled');
-	if (isLocalHistoryEnabled) {
-		let localHistoryWarning = `LocalHistory is enabled, you may want to disable it by adding the line **workbench.localHistory.enabled** in your settings.json`;
+
+	if (timelineConfigurator.isLocalHistoryEnabled()) {
+		let localHistoryWarning = `LocalHistory is enabled, you may want to disable it by adding the line "workbench.localHistory.enabled" in your settings.json`;
 		vscode.window.showWarningMessage(localHistoryWarning);
 	}
 
@@ -88,19 +91,22 @@ export function activate(context: vscode.ExtensionContext) {
 			case TextDocumentChangeReason.Undo:
 
 				let timelineNode = createTimelineNode(document.fileName, timelineStorageUri, currentSnapshot, TextDocumentChangeReason[event.reason]);
-				currentArray.push(timelineNode);
-				checkIfTimelineArrayReachedMaxAndFixIt(currentArray);
-				let timelinePath = [timelineStorageUri.path, base32.encode(document.fileName), 'timeline.json'].join('\\')
+				if (timelineNode !== undefined) {
+					currentArray.push(timelineNode);
+					checkIfTimelineArrayReachedMaxAndFixIt(currentArray);
+					let timelinePath = [timelineStorageUri.path, base32.encode(document.fileName), 'timeline.json'].join('\\')
 
-				vscode.workspace.fs.writeFile(vscode.Uri.file(timelinePath), new TextEncoder().encode(JSON.stringify(currentArray)));
+					vscode.workspace.fs.writeFile(vscode.Uri.file(timelinePath), new TextEncoder().encode(JSON.stringify(currentArray)));
 
-				if (!timelineDataProvider.hasTimelineArray())
-					timelineDataProvider.setTimelineArray(currentArray);
-				setTimeout(() => {
-					timelineDataProvider.refresh();
-				}, 500);
+					if (!timelineDataProvider.hasTimelineArray())
+						timelineDataProvider.setTimelineArray(currentArray);
+					setTimeout(() => {
+						timelineDataProvider.refresh();
+					}, 500);
+				}
 				break;
 		}
+		
 		currentSnapshot = document.getText();
 	});
 
@@ -111,17 +117,19 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 
 		let timelineNode = createTimelineNode(document.fileName, timelineStorageUri, currentSnapshot, 'Save');
-		currentArray.push(timelineNode);
-		checkIfTimelineArrayReachedMaxAndFixIt(currentArray);
-		let timelinePath = [timelineStorageUri.path, base32.encode(document.fileName), 'timeline.json'].join('\\')
+		if (timelineNode !== undefined) {
+			currentArray.push(timelineNode);
+			checkIfTimelineArrayReachedMaxAndFixIt(currentArray);
+			let timelinePath = [timelineStorageUri.path, base32.encode(document.fileName), 'timeline.json'].join('\\')
 
-		vscode.workspace.fs.writeFile(vscode.Uri.file(timelinePath), new TextEncoder().encode(JSON.stringify(currentArray)));
+			vscode.workspace.fs.writeFile(vscode.Uri.file(timelinePath), new TextEncoder().encode(JSON.stringify(currentArray)));
 
-		if (!timelineDataProvider.hasTimelineArray())
-			timelineDataProvider.setTimelineArray(currentArray);
-		setTimeout(() => {
-			timelineDataProvider.refresh();
-		}, 500);
+			if (!timelineDataProvider.hasTimelineArray())
+				timelineDataProvider.setTimelineArray(currentArray);
+			setTimeout(() => {
+				timelineDataProvider.refresh();
+			}, 500);
+		}
 
 		currentSnapshot = document.getText();
 	})
@@ -148,14 +156,17 @@ export function activate(context: vscode.ExtensionContext) {
 	// END - EVENTS HANDLER
 }
 
-function createTimelineNode(filename: string, storageUri: vscode.Uri, currentSnapshot: string, name: string = 'undefined'): TimelineNode {
+function createTimelineNode(filename: string, storageUri: vscode.Uri, currentSnapshot: string, name: string = 'undefined'): TimelineNode | undefined {
 	let filename32: string = base32.encode(filename);
 	let snapshopFileName = randomUUID();
 	let folderPath = storageUri.path + '\\' + filename32;
 	let snapshotPath = folderPath + '\\' + snapshopFileName + extname(filename);
-	vscode.workspace.fs.writeFile(vscode.Uri.file(snapshotPath), new TextEncoder().encode(currentSnapshot));
-	let timelineNode = new TimelineNode(filename, snapshotPath, name);
-	return timelineNode;
+
+	if (timelineConfigurator.getMaxEntrySize() >= Utils.getFileKbSizeOfString(currentSnapshot)) {
+		vscode.workspace.fs.writeFile(vscode.Uri.file(snapshotPath), new TextEncoder().encode(currentSnapshot));
+		let timelineNode = new TimelineNode(filename, snapshotPath, name);
+		return timelineNode;
+	}
 }
 
 function checkIfTimelineArrayReachedMaxAndFixIt(timelineArray: TimelineNode[]) {

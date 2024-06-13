@@ -13,12 +13,12 @@ If you use this extension, you might want to deactivate the real timeline of vsc
 ```
 ### Todo
 - [ ] add additional conditions
-    - [ ] max file size for a timelineNode
+    - [x] max file size for a timelineNode
     - [ ] cooldown when adding a timelineNode
 - [ ] adding settings
     - [ ] max files
     - [ ] max file size
-- [ ] Alert when local history is enabled
+- [x] Alert when local history is enabled
 - [ ] Quick logo
 - [ ] rework the README
 - [ ] add gifs

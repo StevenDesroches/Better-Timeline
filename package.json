@@ -17,6 +17,26 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Better Timeline",
+      "properties": {
+        "betterTimeline.maxEntrySize": {
+          "type": "integer",
+          "default": 256,
+          "description": "Max entry size in KB"
+        },
+        "betterTimeline.maxAllowedEntries": {
+          "type": "integer",
+          "default": 50,
+          "description": "Max amount of entries allowed to exists for a given file"
+        },
+        "betterTimeline.insertingEntryDelay": {
+          "type": "integer",
+          "default": 500,
+          "description": "Delay in microseconds before inserting a new entry in the timeline"
+        }
+      }
+    },
     "viewsWelcome": [
       {
         "view": "betterTimelineTreeView",
