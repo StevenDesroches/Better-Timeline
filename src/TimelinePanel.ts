@@ -1,13 +1,12 @@
 import * as vscode from 'vscode';
-import { TimelineNode } from './TimelineNode';
-
 import { TimelinePanelItem } from './TimelinePanelItem';
+import { TimelineArray } from './TimelineArray';
 
 export class TimelinePanel implements vscode.TreeDataProvider<any> {
     private _onDidChangeTreeData: vscode.EventEmitter<any> = new vscode.EventEmitter<any>();
     readonly onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event;
 
-    constructor(private timelineArray: TimelineNode[] | null) { }
+    constructor(private timelineArray: TimelineArray | null) { }
 
     public refresh(): any {
         this._onDidChangeTreeData.fire(undefined);
@@ -25,14 +24,14 @@ export class TimelinePanel implements vscode.TreeDataProvider<any> {
 
         let result: TimelinePanelItem[] = [];
 
-        this.timelineArray.forEach(function (timelineNode) {
+        this.timelineArray.get().forEach(function (timelineNode) {
             result.push(new TimelinePanelItem(timelineNode));
         });
 
         return result;
     }
 
-    setTimelineArray(timelineArray: TimelineNode[] | null) {
+    setTimelineArray(timelineArray: TimelineArray | null) {
         this.timelineArray = timelineArray;
     }
 
