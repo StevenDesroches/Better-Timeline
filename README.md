@@ -12,12 +12,12 @@ If you use this extension, you might want to deactivate the real timeline of vsc
 "workbench.localHistory.enabled": false
 ```
 ### Todo
-- [ ] add additional conditions
+- [x] add additional conditions
     - [x] max file size for a timelineNode
-    - [ ] cooldown when adding a timelineNode
-- [ ] adding settings
-    - [ ] max files
-    - [ ] max file size
+    - [x] cooldown when adding a timelineNode
+- [x] adding settings
+    - [x] max files
+    - [x] max file size
 - [x] Alert when local history is enabled
 - [ ] Quick logo
 - [ ] rework the README
