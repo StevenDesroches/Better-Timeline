@@ -25,4 +25,9 @@ export class TimelineConfigurator {
         return parseInt(this.TimelineConfig.get('insertingDelayEntry') ?? '500');
     }
 
+    getkeepEntriesWhenClosingFile(): boolean {
+        let keepEntriesWhenClosingFile = this.TimelineConfig.get('keepEntriesWhenClosingFile');
+        return (typeof keepEntriesWhenClosingFile === 'boolean') && keepEntriesWhenClosingFile;
+
+    }
 }

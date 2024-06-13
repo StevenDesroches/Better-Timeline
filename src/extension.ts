@@ -118,6 +118,14 @@ export function activate(context: vscode.ExtensionContext) {
 			timelineDataProvider.refresh();
 		}
 	});
+
+	vscode.workspace.onDidCloseTextDocument(function (event) {
+		if (!timelineConfigurator.getkeepEntriesWhenClosingFile()) {
+			let currentTimelineFolderPath = timelineStorageUri.path + '\\' + basename(event.fileName);
+			if (currentTimelineFolderPath)
+				vscode.workspace.fs.delete(vscode.Uri.file(currentTimelineFolderPath), { recursive: true });
+		}
+	})
 	// END - EVENTS HANDLER
 }
 
