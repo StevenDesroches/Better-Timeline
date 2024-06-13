@@ -29,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	timelineStorageUri = context.storageUri ?? context.globalStorageUri;
 	let currentSnapshot: string = '';
-	let timelineArray = new TimelineArray();
+	const timelineArray = new TimelineArray();
 
 	let timelineDataProvider = new TimelinePanel(timelineArray);
 	let timelineDataProviderView = vscode.window.createTreeView('betterTimelineTreeView', {
@@ -51,8 +51,6 @@ export function activate(context: vscode.ExtensionContext) {
 		getTimelineFromPath(timelinePath).then(function (currentTimelineArray) {
 			if (currentTimelineArray)
 				timelineArray.set(currentTimelineArray);
-			timelineCommandHandler.setTimelineArray(timelineArray);
-			timelineDataProvider.setTimelineArray(timelineArray);
 			timelineDataProvider.refresh();
 		});
 	}
@@ -111,15 +109,10 @@ export function activate(context: vscode.ExtensionContext) {
 			getTimelineFromPath(timelinePath).then(function (currentTimelineArray) {
 				if (currentTimelineArray)
 					timelineArray.set(currentTimelineArray);
-
-				timelineCommandHandler.setTimelineArray(timelineArray);
-				timelineDataProvider.setTimelineArray(timelineArray);
 				timelineDataProvider.refresh();
 			});
 		} else {
 			timelineArray.set([]);
-			timelineCommandHandler.setTimelineArray(timelineArray);
-			timelineDataProvider.setTimelineArray(timelineArray);
 			timelineDataProvider.refresh();
 		}
 	});
@@ -140,9 +133,6 @@ function pushTimelineNode(timelineArray: TimelineArray, timelineNode: TimelineNo
 	let timelinePath = [timelineStorageUri.path, base32.encode(document.fileName), 'timeline.json'].join('\\');
 
 	vscode.workspace.fs.writeFile(vscode.Uri.file(timelinePath), new TextEncoder().encode(JSON.stringify(timelineArray.array)));
-
-	timelineDataProvider.setTimelineArray(timelineArray);
-	timelineCommandHandler.setTimelineArray(timelineArray);
 
 	setTimeout(() => {
 		timelineDataProvider.refresh();

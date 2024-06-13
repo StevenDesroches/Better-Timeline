@@ -15,9 +15,9 @@ export class TimelineCommandHandler {
         this.timelineArray = timelineArray;
     }
 
-    setTimelineArray(timelineArray: TimelineArray) {
-        this.timelineArray.replace(timelineArray);
-    }
+    // setTimelineArray(timelineArray: TimelineArray) {
+    //     this.timelineArray.replace(timelineArray);
+    // }
 
     createTimelineCompareHandler() {
         const commandTimelineCompareHandler = (timelineNode: TimelineNode) => {
@@ -36,7 +36,7 @@ export class TimelineCommandHandler {
                 if (currentTimelineFolderPath) {
                     vscode.workspace.fs.delete(vscode.Uri.file(currentTimelineFolderPath), { recursive: true });
                     this.timelineArray.set([]);
-                    timelineDataProvider.setTimelineArray(this.timelineArray);
+                    // timelineDataProvider.setTimelineArray(this.timelineArray);
                     timelineDataProvider.refresh();
                 }
             }
@@ -48,7 +48,7 @@ export class TimelineCommandHandler {
         const commandTimelineClearAllHandler = () => {
             vscode.workspace.fs.delete(timelineStorageUri, { recursive: true });
             this.timelineArray.set([]);
-            timelineDataProvider.setTimelineArray(this.timelineArray);
+            // timelineDataProvider.setTimelineArray(this.timelineArray);
             timelineDataProvider.refresh();
         };
         this.context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.clear.all', commandTimelineClearAllHandler));

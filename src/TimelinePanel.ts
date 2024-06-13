@@ -31,12 +31,12 @@ export class TimelinePanel implements vscode.TreeDataProvider<any> {
         return result;
     }
 
-    setTimelineArray(timelineArray: TimelineArray | null) {
-        this.timelineArray = timelineArray;
-    }
+    // setTimelineArray(timelineArray: TimelineArray | null) {
+    //     this.timelineArray = timelineArray;
+    // }
 
-    hasTimelineArray(): boolean {
-        return this.timelineArray !== null;
-    }
+    // hasTimelineArray(): boolean {
+    //     return this.timelineArray !== null;
+    // }
 
 }
