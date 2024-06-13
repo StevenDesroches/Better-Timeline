@@ -6,6 +6,7 @@ import { TimelinePanel } from './TimelinePanel';
 import { TimelineConfigurator } from './TimelineConfigurator';
 import { utils } from 'mocha';
 import { Utils } from './Utils';
+import { TimelineCommandHandler } from './TimelineCommandHandler';
 
 const base32 = require('base32');
 
@@ -50,35 +51,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 	// START - COMMANDS HANDLER
-	const commandTimelineCompareHandler = (timelineNode: TimelineNode) => {
-		vscode.commands.executeCommand("vscode.diff", vscode.Uri.file(timelineNode.originalFilePath), vscode.Uri.file(timelineNode.snapshotPath));
-	};
-	let subscriptions = context.subscriptions;
-	context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.compare', commandTimelineCompareHandler));
-
-	const commandBetterTimelineClearHandler = () => {
-		if (currentArray.length <= 0)
-			return;
-		let timelineNode: TimelineNode | undefined = currentArray.at(0);
-		if (timelineNode !== undefined) {
-			let currentTimelineFolderPath = timelineStorageUri.path + '\\' + basename(timelineNode.originalFilePath);
-			if (currentTimelineFolderPath) {
-				vscode.workspace.fs.delete(vscode.Uri.file(currentTimelineFolderPath), { recursive: true });
-				currentArray = [];
-				timelineDataProvider.setTimelineArray(currentArray);
-				timelineDataProvider.refresh();
-			}
-		}
-	}
-	context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.clear', commandBetterTimelineClearHandler));
-
-	const commandTimelineClearAllHandler = () => {
-		vscode.workspace.fs.delete(timelineStorageUri, { recursive: true });
-		currentArray = [];
-		timelineDataProvider.setTimelineArray(currentArray);
-		timelineDataProvider.refresh();
-	};
-	context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.clear.all', commandTimelineClearAllHandler));
+	let timelineCommandHandler = new TimelineCommandHandler(context);
+	timelineCommandHandler.createTimelineCompareHandler();
+	timelineCommandHandler.createTimelineClearHandler(timelineStorageUri, currentArray, timelineDataProvider);
+	timelineCommandHandler.createTimelineClearAllHandler(timelineStorageUri, currentArray, timelineDataProvider);
 	// END - COMMANDS HANDLER
 
 
@@ -112,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		if (!onWillSaveBlocked) {
 			onWillSaveBlocked = true;
-			let timelineNode = createTimelineNode(document.fileName, timelineStorageUri, currentSnapshot, TextDocumentChangeReason[event.reason]);
+			let timelineNode = createTimelineNode(document.fileName, timelineStorageUri, currentSnapshot, 'Save');
 			if (timelineNode !== undefined) {
 				pushTimelineNode(currentArray, timelineNode, document, timelineDataProvider, isOnDidChangeBlocked);
 				setTimeout(() => {
