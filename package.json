@@ -3,18 +3,20 @@
   "displayName": "Better Timeline",
   "publisher": "StevenDesroches",
   "description": "",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/StevenDesroches/Better-Timeline.git"
   },
+  "icon": "resources/icon.png",
+  "pricing": "Free",
   "engines": {
     "vscode": "^1.90.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": ["onStartupFinished"],
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
@@ -62,7 +64,7 @@
         {
           "id": "betterTimeline-explorer",
           "title": "Better Timeline Explorer",
-          "icon": "resources/tree.svg"
+          "icon": "resources/explorer.svg"
         }
       ]
     },
