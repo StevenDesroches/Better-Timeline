@@ -32,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const timelineArray = new TimelineArray();
 
 	let timelineDataProvider = new TimelinePanel(timelineArray);
-	let timelineDataProviderView = vscode.window.createTreeView('betterTimelineTreeView', {
+	let timelineDataProviderView = vscode.window.createTreeView('smootherTimelineTreeView', {
 		treeDataProvider: timelineDataProvider
 	});
 

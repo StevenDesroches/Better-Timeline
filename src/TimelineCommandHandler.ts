@@ -29,10 +29,10 @@ export class TimelineCommandHandler {
             vscode.commands.executeCommand("vscode.diff", vscode.Uri.file(timelineNode.originalFilePath), vscode.Uri.file(timelineNode.snapshotPath));
         };
         let subscriptions = this.context.subscriptions;
-        this.context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.compare', commandTimelineCompareHandler));
+        this.context.subscriptions.push(vscode.commands.registerCommand('smoothertimeline.compare', commandTimelineCompareHandler));
     }
     createTimelineClearHandler() {
-        const commandBetterTimelineClearHandler = () => {
+        const commandsmootherTimelineClearHandler = () => {
             if (this.timelineArray.length() <= 0)
                 return;
             let timelineNode: TimelineNode | undefined = this.timelineArray.at(0);
@@ -46,7 +46,7 @@ export class TimelineCommandHandler {
                 }
             }
         }
-        this.context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.clear', commandBetterTimelineClearHandler));
+        this.context.subscriptions.push(vscode.commands.registerCommand('smoothertimeline.clear', commandsmootherTimelineClearHandler));
     }
 
     createTimelineClearAllHandler() {
@@ -56,7 +56,7 @@ export class TimelineCommandHandler {
             // timelineDataProvider.setTimelineArray(this.timelineArray);
             this.timelineDataProvider.refresh();
         };
-        this.context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.clear.all', commandTimelineClearAllHandler));
+        this.context.subscriptions.push(vscode.commands.registerCommand('smoothertimeline.clear.all', commandTimelineClearAllHandler));
     }
 
 }

@@ -8,8 +8,8 @@ export class TimelinePanelItem extends vscode.TreeItem {
         this.tooltip = `${moment(timelineNode.timestamp).format('LLLL')}`;
         this.description = `${moment(timelineNode.timestamp).fromNow()}`;
         const command = {
-            command: 'bettertimeline.compare',
-            title: 'BetterTimeline: Compare',
+            command: 'smoothertimeline.compare',
+            title: 'smootherTimeline: Compare',
             tooltip: 'tooltip',
             arguments: [timelineNode]
         }

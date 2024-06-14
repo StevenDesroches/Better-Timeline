@@ -1,4 +1,4 @@
-###  Prototype of a better timeline
+###  Prototype of a smoother timeline
 Quick and dirty because an issue is open on github for an api for the timeline
 But I still needed that extension for myself because i was losing some of my work by undoing and redoing
 

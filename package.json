@@ -1,12 +1,12 @@
 {
-  "name": "bettertimeline",
-  "displayName": "Better Timeline",
+  "name": "smoothertimeline",
+  "displayName": "smoother Timeline",
   "publisher": "StevenDesroches",
   "description": "",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/StevenDesroches/Better-Timeline.git"
+    "url": "https://github.com/StevenDesroches/smoother-Timeline.git"
   },
   "icon": "resources/icon.png",
   "pricing": "Free",
@@ -20,24 +20,24 @@
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
-      "title": "Better Timeline",
+      "title": "Smoother Timeline",
       "properties": {
-        "betterTimeline.maxEntrySize": {
+        "smootherTimeline.maxEntrySize": {
           "type": "integer",
           "default": 256,
           "description": "Max entry size in KB"
         },
-        "betterTimeline.maxAllowedEntries": {
+        "smootherTimeline.maxAllowedEntries": {
           "type": "integer",
           "default": 50,
           "description": "Max amount of entries allowed to exists for a given file"
         },
-        "betterTimeline.insertingEntryDelay": {
+        "smootherTimeline.insertingEntryDelay": {
           "type": "integer",
           "default": 500,
           "description": "Delay in microseconds before inserting a new entry in the timeline"
         },
-        "betterTimeline.keepEntriesWhenClosingFile": {
+        "smootherTimeline.keepEntriesWhenClosingFile": {
           "type": "boolean",
           "default": false,
           "description": "Keep entries when closing a file"
@@ -46,14 +46,14 @@
     },
     "viewsWelcome": [
       {
-        "view": "betterTimelineTreeView",
+        "view": "smootherTimelineTreeView",
         "contents": "No Changes"
       }
     ],
     "views": {
-      "betterTimeline-explorer": [
+      "smootherTimeline-explorer": [
         {
-          "id": "betterTimelineTreeView",
+          "id": "smootherTimelineTreeView",
           "name": "Timeline",
           "contextualTitle": ""
         }
@@ -62,8 +62,8 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "betterTimeline-explorer",
-          "title": "Better Timeline Explorer",
+          "id": "smootherTimeline-explorer",
+          "title": "Smoother Timeline Explorer",
           "icon": "resources/explorer.svg"
         }
       ]
@@ -71,33 +71,33 @@
     "menus": {
       "view/title": [
         {
-          "command": "bettertimeline.clear.all",
+          "command": "smoothertimeline.clear.all",
           "group": "navigation",
-          "when": "view == betterTimelineTreeView"
+          "when": "view == smootherTimelineTreeView"
         },
         {
-          "command": "bettertimeline.clear",
+          "command": "smoothertimeline.clear",
           "group": "navigation",
-          "when": "view == betterTimelineTreeView"
+          "when": "view == smootherTimelineTreeView"
         }
       ]
     },
     "commands": [
       {
-        "command": "bettertimeline.compare",
-        "title": "BetterTimeline: Compare"
+        "command": "smoothertimeline.compare",
+        "title": "smootherTimeline: Compare"
       },
       {
-        "command": "bettertimeline.clear",
-        "title": "BetterTimeline: Clear",
+        "command": "smoothertimeline.clear",
+        "title": "smootherTimeline: Clear",
         "icon": {
           "light": "resources/light/clear.svg",
           "dark": "resources/dark/clear.svg"
         }
       },
       {
-        "command": "bettertimeline.clear.all",
-        "title": "BetterTimeline: Clear All",
+        "command": "smoothertimeline.clear.all",
+        "title": "smootherTimeline: Clear All",
         "icon": {
           "light": "resources/light/clearAll.svg",
           "dark": "resources/dark/clearAll.svg"

@@ -6,7 +6,7 @@ export class TimelineConfigurator {
 
     constructor() {
         this.localHistoryConfig = workspace.getConfiguration('workbench.localHistory');
-        this.TimelineConfig = workspace.getConfiguration('betterTimeline');
+        this.TimelineConfig = workspace.getConfiguration('smootherTimeline');
     }
 
     isLocalHistoryEnabled() {
