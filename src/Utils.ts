@@ -4,6 +4,4 @@ export class Utils {
         let bytes = Buffer.byteLength(string);
         return bytes / kb;
     }
-
-    
 }

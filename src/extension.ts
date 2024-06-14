@@ -37,10 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	// START - COMMANDS HANDLER
-	timelineCommandHandler = new TimelineCommandHandler(context, timelineArray);
-	timelineCommandHandler.createTimelineCompareHandler();
-	timelineCommandHandler.createTimelineClearHandler(timelineStorageUri, timelineDataProvider);
-	timelineCommandHandler.createTimelineClearAllHandler(timelineStorageUri, timelineDataProvider);
+	timelineCommandHandler = new TimelineCommandHandler(context, timelineArray, timelineStorageUri, timelineDataProvider);
 	// END - COMMANDS HANDLER
 
 	if (vscode.window.activeTextEditor?.document) {
@@ -54,10 +51,6 @@ export function activate(context: vscode.ExtensionContext) {
 			timelineDataProvider.refresh();
 		});
 	}
-
-
-
-
 
 	// START - EVENTS HANDLER
 	let isOnDidChangeBlocked = false;
@@ -97,11 +90,11 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}
 		currentSnapshot = document.getText();
-	})
+	});
 
 	vscode.window.onDidChangeActiveTextEditor(function (event) {
 		if (vscode.window.tabGroups.activeTabGroup?.activeTab?.label.includes('↔'))
-			return;//dirty way to check if the tab is a diff view
+			return; //dirty way to check if the tab is a diff view
 
 		currentSnapshot = event?.document.getText() ?? '';
 		if (event?.document.fileName) {
@@ -123,7 +116,7 @@ export function activate(context: vscode.ExtensionContext) {
 			if (currentTimelineFolderPath)
 				vscode.workspace.fs.delete(vscode.Uri.file(currentTimelineFolderPath), { recursive: true });
 		}
-	})
+	});
 	// END - EVENTS HANDLER
 }
 

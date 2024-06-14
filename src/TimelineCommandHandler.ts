@@ -10,14 +10,19 @@ const base32 = require('base32');
 export class TimelineCommandHandler {
     context: vscode.ExtensionContext
     timelineArray: TimelineArray
-    constructor(context: vscode.ExtensionContext, timelineArray: TimelineArray) {
+    timelineStorageUri: vscode.Uri;
+    timelineDataProvider: TimelinePanel;
+
+    constructor(context: vscode.ExtensionContext, timelineArray: TimelineArray, timelineStorageUri: vscode.Uri, timelineDataProvider: TimelinePanel) {
         this.context = context;
         this.timelineArray = timelineArray;
-    }
+        this.timelineStorageUri = timelineStorageUri;
+        this.timelineDataProvider = timelineDataProvider;
 
-    // setTimelineArray(timelineArray: TimelineArray) {
-    //     this.timelineArray.replace(timelineArray);
-    // }
+        this.createTimelineCompareHandler();
+        this.createTimelineClearHandler();
+        this.createTimelineClearAllHandler();
+    }
 
     createTimelineCompareHandler() {
         const commandTimelineCompareHandler = (timelineNode: TimelineNode) => {
@@ -26,30 +31,30 @@ export class TimelineCommandHandler {
         let subscriptions = this.context.subscriptions;
         this.context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.compare', commandTimelineCompareHandler));
     }
-    createTimelineClearHandler(timelineStorageUri: vscode.Uri, timelineDataProvider: TimelinePanel) {
+    createTimelineClearHandler() {
         const commandBetterTimelineClearHandler = () => {
             if (this.timelineArray.length() <= 0)
                 return;
             let timelineNode: TimelineNode | undefined = this.timelineArray.at(0);
             if (timelineNode !== undefined) {
-                let currentTimelineFolderPath = timelineStorageUri.path + '\\' + base32.encode(timelineNode.originalFilePath);
+                let currentTimelineFolderPath = this.timelineStorageUri.path + '\\' + base32.encode(timelineNode.originalFilePath);
                 if (currentTimelineFolderPath) {
                     vscode.workspace.fs.delete(vscode.Uri.file(currentTimelineFolderPath), { recursive: true });
                     this.timelineArray.set([]);
                     // timelineDataProvider.setTimelineArray(this.timelineArray);
-                    timelineDataProvider.refresh();
+                    this.timelineDataProvider.refresh();
                 }
             }
         }
         this.context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.clear', commandBetterTimelineClearHandler));
     }
 
-    createTimelineClearAllHandler(timelineStorageUri: vscode.Uri, timelineDataProvider: TimelinePanel) {
+    createTimelineClearAllHandler() {
         const commandTimelineClearAllHandler = () => {
-            vscode.workspace.fs.delete(timelineStorageUri, { recursive: true });
+            vscode.workspace.fs.delete(this.timelineStorageUri, { recursive: true });
             this.timelineArray.set([]);
             // timelineDataProvider.setTimelineArray(this.timelineArray);
-            timelineDataProvider.refresh();
+            this.timelineDataProvider.refresh();
         };
         this.context.subscriptions.push(vscode.commands.registerCommand('bettertimeline.clear.all', commandTimelineClearAllHandler));
     }
